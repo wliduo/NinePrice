@@ -1,0 +1,49 @@
+<html>
+
+
+
+<script src="./crypto-js.min-4.0.0.js?version=v4.2.3.0.2"></script>
+
+<script>
+
+var aseKey = 'DmoK0BvfXuYCz5Pd';
+
+function Encrypt(content) {
+    let key = CryptoJS.enc.Utf8.parse(aseKey);//将秘钥转换成Utf8字节数组
+    console.log(key);
+    return CryptoJS.AES.encrypt(content, key, {
+        iv: CryptoJS.enc.Utf8.parse(aseKey),
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.ZeroPadding
+    }).toString();
+}
+
+let json = {};
+json["hospitalId"]="62";
+json["deptId"]="7381";
+json["doctorId"]="35734";
+json["doctorName"]="HPV九价第1针";
+json["depName"]="HPV九价第1针";
+json["toDate"]="2021-05-08";
+json["guahaoAmt"]="0";
+json["srcDetlId"]="22005458";
+json["beginTime"]="16:00";
+json["endTime"]="16:30";
+json["skdSno"]="1333408";
+json["hospitalName"]="HPV疫苗 紫薇社康";
+json["numberDays"]="1";
+json["deptAddress"]="";
+json["inputType"]="7";
+
+let param = Encrypt(JSON.stringify(json));
+
+
+let url = "?params="+encodeURIComponent(param);
+
+console.log(url);
+
+</script>
+
+
+
+</html>
