@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>九价专版 - dolyw.com</title>
+    <title>九价 - dolyw.com</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -22,34 +22,56 @@
         </fieldset>
 
         <div class="layui-row">
+            
+            <div class="layui-inline">
+                <label class="layui-form-label">日期</label>
+                <div class="layui-input-inline">
+                  <input type="text" class="layui-input" id="toDate" placeholder="yyyy-MM-dd">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="layui-row">
+
+            <div class="layui-inline">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-inline" style="margin-top: 15px;">
+                    <input type="radio" name="dayType" value="上午" title="上午" checked="">上午
+                    <input type="radio" name="dayType" value="下午" title="下午">下午
+                </div>
+            </div>
+
+        </div>
+
+        <div class="layui-row">
 
             <table class="layui-table">
                 <colgroup>
                   <col width="100">
                   <col width="100">
-                  <col width="100">
                 </colgroup>
                 <thead>
                   <tr>
-                    <th>date</th>
                     <th>skdSno</th>
                     <th>totalCost</th>
                   </tr> 
                 </thead>
                 <tbody>
                   <tr>
-                      <td id="date"></td>
                       <td id="skdSno"></td>
                       <td id="totalCost"></td>
                   </tr>
                 </tbody>
             </table>
+        
         </div>
 
         <div class="layui-row">
 
-            <button id="getAllUrlBtnM" onclick="getAllUrl('上午');" class="layui-btn layui-btn-default">获取上午排班</button>
-            <button id="getAllUrlBtnA" onclick="getAllUrl('下午');" class="layui-btn layui-btn-normal">获取下午排班</button>
+            <button id="getToDateBtn" onclick="getToDate();" class="layui-btn layui-btn-default">获取skdSno</button>
+            <button id="getAllUrlBtn" onclick="getAllUrl();" class="layui-btn layui-btn-normal">获取排班</button>
+        
         </div>
 
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
@@ -75,7 +97,8 @@
                   
                 </tbody>
             </table>
-		</div>
+        
+        </div>
         
     </div>
     
@@ -87,37 +110,14 @@
 
         var aseKey = 'DmoK0BvfXuYCz5Pd';
         
-        // 取地址栏参数
-        function getQueryString(name) {
-            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-            var r = window.location.search.substr(1).match(reg);
-            if (r != null) {
-                return unescape(r[2]);
-            }
-            return null;
-        }
-
-        // 加载参数
-        var date = getQueryString("date");
-        var skdSno = getQueryString("skdSno");
-        var totalCost = getQueryString("totalCost");
-        if (date) {
-            $('#date').html(date);
-        } else {
-            layer.msg('date为空');
-        }
-        if (skdSno) {
-            $('#skdSno').html(skdSno);
-        } else {
-            layer.msg('skdSno为空');
-        }
-        if (totalCost) {
-            $('#totalCost').html(totalCost);
-        } else {
-            layer.msg('totalCost为空');
-        }
-        
-
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+            //常规用法
+            laydate.render({
+                elem: '#toDate',
+                value: new Date()
+            });
+        });
 
         function tian() {
             $('#tian2').show();
@@ -186,16 +186,11 @@
             }
         }
 
-        function getAllUrl(dayType) {
-
-            // console.log($('#totalCost').html());
-
+        function getAllUrl() {
             $('#scheduling').html("");
             if ($("#skdSno").html()) {
-                $("#getAllUrlBtnM").attr("disabled", "disabled");
-                $("#getAllUrlBtnA").attr("disabled", "disabled");
-                let url = "https://www.wechat.lgjkzx.com/mps-area-version/appointment/getSourceList?hospitalId=62&deptId=7381&docId=35734&skdSno=" + $('#skdSno').html() + "&dayType=" + dayType;
-                console.log(url);
+                $("#getAllUrlBtn").attr("disabled", "disabled");
+                let url = "https://www.wechat.lgjkzx.com/mps-area-version/appointment/getSourceList?hospitalId=62&deptId=7381&docId=35734&skdSno=" + $('#skdSno').html() + "&dayType=" + $('input:radio:checked').val();
                 $.ajax({
                     url: url,
                     success: function (list) {
@@ -213,8 +208,7 @@
                         } catch(e) {
                             layer.msg('出现异常请刷新页面');
                         }
-                        $("#getAllUrlBtnM").removeAttr("disabled");
-                        $("#getAllUrlBtnA").removeAttr("disabled");
+                        $("#getAllUrlBtn").removeAttr("disabled");
                     }
                 });
             } else {
