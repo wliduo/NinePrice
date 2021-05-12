@@ -234,6 +234,7 @@
                             console.log(list);
                             var model = list.model;
                             if (model.length > 0) {
+                                url = model;
                                 const add = Bmob.Query("nine");
                                 add.set("date", date);
                                 add.set("model", model);
@@ -255,7 +256,6 @@
 
         var url;
         function showHtml(model) {
-            url = model;
             var html = "";
             for (var i=0;i<model.length;i++) {
                 html += "<tr><td>" + model[i].beginTime + "-" + model[i].endTime + "</td>";
