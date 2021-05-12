@@ -234,7 +234,7 @@
                             console.log(list);
                             var model = list.model;
                             if (model.length > 0) {
-                                urlList = model;
+                                
                                 const add = Bmob.Query("nine");
                                 add.set("date", date);
                                 add.set("model", model);
@@ -257,6 +257,7 @@
         var urlList;
         function showHtml(model) {
             var html = "";
+            urlList = model;
             for (var i=0;i<model.length;i++) {
                 html += "<tr><td>" + model[i].beginTime + "-" + model[i].endTime + "</td>";
                 html += "<td>" + "总数" + model[i].amountTotal + "-已预约" + model[i].amountUsed + "</td>";
