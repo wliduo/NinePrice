@@ -234,7 +234,7 @@
                             console.log(list);
                             var model = list.model;
                             if (model.length > 0) {
-                                url = model;
+                                urlList = model;
                                 const add = Bmob.Query("nine");
                                 add.set("date", date);
                                 add.set("model", model);
@@ -254,7 +254,7 @@
             }
         }
 
-        var url;
+        var urlList;
         function showHtml(model) {
             var html = "";
             for (var i=0;i<model.length;i++) {
@@ -269,7 +269,7 @@
 
         function goUrl(i) {
             layer.load(2);
-            window.location.href = showUrl(url[i]);
+            window.location.href = showUrl(urlList[i]);
         }
         
         function showUrl(model) {
