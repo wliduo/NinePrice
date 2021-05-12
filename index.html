@@ -253,15 +253,23 @@
             }
         }
 
+        var url;
         function showHtml(model) {
+            url = model;
             var html = "";
             for (var i=0;i<model.length;i++) {
                 html += "<tr><td>" + model[i].beginTime + "-" + model[i].endTime + "</td>";
                 html += "<td>" + "总数" + model[i].amountTotal + "-已预约" + model[i].amountUsed + "</td>";
-                html += "<td><a href='" + showUrl(model[i]) + "'>点击跳转</a></td></tr>";
+                /* html += "<td><a href='" + showUrl(model[i]) + "'>点击跳转</a></td></tr>"; */
+                html += "<td><button onclick='goUrl(" + i + ");' class='layui-btn layui-btn-sm layui-btn-normal'>点击跳转</button></td></tr>";
             }
             $('#scheduling').html(html);
             layer.closeAll('loading');
+        }
+
+        function goUrl(i) {
+            layer.load(2);
+            window.location.href = showUrl(url[i]);
         }
         
         function showUrl(model) {
