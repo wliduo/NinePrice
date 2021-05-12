@@ -46,8 +46,7 @@
             </table>
         </div>
 
-        <div class="layui-row">
-
+        <div class="layui-row" style="display: none;">
             <button id="getAllUrlBtnM" onclick="getAllUrl('上午');" class="layui-btn layui-btn-default">获取上午排班</button>
             <button id="getAllUrlBtnA" onclick="getAllUrl('下午');" class="layui-btn layui-btn-normal">获取下午排班</button>
         </div>
@@ -83,7 +82,10 @@
     <script type="text/javascript" src="https://cdn.staticfile.org/layer/2.3/layer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/layui-src@2.6.5/dist/layui.js" charset="utf-8"></script>
     <script src="./crypto-js.min-4.0.0.js?version=v4.2.3.0.2"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/hydrogen-js-sdk@1.6.7/dist/Bmob-1.6.2.min.js"></script>
     <script>
+
+        layer.load(2);
 
         var aseKey = 'DmoK0BvfXuYCz5Pd';
         
@@ -101,6 +103,8 @@
         var date = getQueryString("date");
         var skdSno = getQueryString("skdSno");
         var totalCost = getQueryString("totalCost");
+        var dayTypeNum = getQueryString("dayTypeNum");
+        var noCache = getQueryString("noCache");
         if (date) {
             $('#date').html(date);
         } else {
@@ -117,6 +121,33 @@
             layer.msg('totalCost为空');
         }
         
+
+        Bmob.initialize("a41a0412ca579ff79acc133e82c4df87", "a796992ff311ad2e23405d24ee932e10");
+
+        if (noCache) {
+            if (dayTypeNum == 2) {
+                getAllUrl('下午');
+            } else {
+                getAllUrl('上午');
+            }
+        } else {
+            const query = Bmob.Query("nine");
+            // 根据当前url查询数据
+            query.equalTo("date", "==", date);
+            query.find().then(res => {
+                // console.log(res);
+                if (res[0]) {
+                    console.log(res[0].model);
+                    showHtml(res[0].model);
+                } else {
+                    if (dayTypeNum == 2) {
+                        getAllUrl('下午');
+                    } else {
+                        getAllUrl('上午');
+                    }
+                }
+            });
+        }
 
 
         function tian() {
@@ -202,13 +233,13 @@
                         try {
                             console.log(list);
                             var model = list.model;
-                            var html = "";
-                            for (var i=0;i<model.length;i++) {
-                                html += "<tr><td>" + model[i].beginTime + "-" + model[i].endTime + "</td>";
-                                html += "<td>" + "总数" + model[i].amountTotal + "-已预约" + model[i].amountUsed + "</td>";
-                                html += "<td><a href='" + showUrl(model[i]) + "'>点击跳转</a></td></tr>";
+                            if (model.length > 0) {
+                                const add = Bmob.Query("nine");
+                                add.set("date", date);
+                                add.set("model", model);
+                                add.save().then(res => {});
                             }
-                            $('#scheduling').html(html);
+                            showHtml(model);
                             layer.msg('排班获取成功');
                         } catch(e) {
                             layer.msg('出现异常请刷新页面');
@@ -220,6 +251,17 @@
             } else {
                 layer.msg('当前skdSno不存在，请先获取skdSno');
             }
+        }
+
+        function showHtml(model) {
+            var html = "";
+            for (var i=0;i<model.length;i++) {
+                html += "<tr><td>" + model[i].beginTime + "-" + model[i].endTime + "</td>";
+                html += "<td>" + "总数" + model[i].amountTotal + "-已预约" + model[i].amountUsed + "</td>";
+                html += "<td><a href='" + showUrl(model[i]) + "'>点击跳转</a></td></tr>";
+            }
+            $('#scheduling').html(html);
+            layer.closeAll('loading');
         }
         
         function showUrl(model) {
