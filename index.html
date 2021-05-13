@@ -136,9 +136,9 @@
             query.equalTo("date", "==", date);
             query.find().then(res => {
                 // console.log(res);
-                if (res[0]) {
-                    console.log(res[0].model);
-                    showHtml(res[0].model);
+                if (res[res.length-1]) {
+                    // console.log(res[res.length-1].model);
+                    showHtml(res[res.length-1].model);
                 } else {
                     if (dayTypeNum == 2) {
                         getAllUrl('下午');
@@ -234,7 +234,6 @@
                             console.log(list);
                             var model = list.model;
                             if (model.length > 0) {
-                                
                                 const add = Bmob.Query("nine");
                                 add.set("date", date);
                                 add.set("model", model);
